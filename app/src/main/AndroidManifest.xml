@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,10 +14,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Alaram_mannager"
         tools:targetApi="31">
+        <activity
+            android:name=".alert_dialog_answer"
+            android:exported="false" />
+
         <receiver
             android:name=".recivers.set_up_reminder"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
 
         <activity
             android:name=".MainActivity"
