@@ -17,7 +17,6 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.alaram_mannager.recivers.ExactAlarm;
-import com.example.alaram_mannager.recivers.set_up_reminder;
 
 import java.util.Calendar;
 
@@ -32,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog ad;
     private Calendar currentTime;
     private int ALARM_REQUEST_CODE;
-    private int SET_UP_ALARM_REQUEST_CODE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +46,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void setInitialSnooze()
     {
-        Intent intent = new Intent(this, set_up_reminder.class);
+        Intent in = new Intent(this, ExactAlarm.class);
+        in.putExtra("Alarm_Option",0);
         alarmIntent = PendingIntent.getBroadcast(this,
-                SET_UP_ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_IMMUTABLE);
+                ALARM_REQUEST_CODE, in, PendingIntent.FLAG_IMMUTABLE);
 
         alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
         alarmMgr.setInexactRepeating(AlarmManager.ELAPSED_REALTIME,
@@ -92,23 +91,28 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void setExactAlarm(Calendar calSet) {
-        Intent intent = new Intent(this, ExactAlarm.class);
-        intent.putExtra("alarmNum", ALARM_REQUEST_CODE);
 
+        Intent intent = new Intent(this, ExactAlarm.class);
         alarmIntent = PendingIntent.getBroadcast(this,
                 ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_IMMUTABLE);
         alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP,
-                calSet.getTimeInMillis(),
-                5 * 60 * 1000, alarmIntent);
+        alarmMgr.cancel(alarmIntent);
 
-        textView.setText("Alarm is set to: " +  calSet.getTime());
+        ALARM_REQUEST_CODE++;
+        intent.putExtra("alarm number", ALARM_REQUEST_CODE);
+        intent.putExtra("Alarm_Option",1);
+        alarmIntent = PendingIntent.getBroadcast(this,
+                ALARM_REQUEST_CODE, intent, PendingIntent.FLAG_IMMUTABLE);
+        alarmMgr = (AlarmManager)this.getSystemService(Context.ALARM_SERVICE);
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calSet.getTimeInMillis(), AlarmManager.INTERVAL_DAY,alarmIntent);
+
+        textView.setText("Alarm: " +  calSet.getTime());
         ALARM_REQUEST_CODE++;
         currentTime = calSet;
     }
 
     public void Set_Alarm(View view) {
-
+        open_Timepickerdialog();
     }
 
     public void Exit(View view) {
