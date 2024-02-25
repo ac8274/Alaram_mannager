@@ -14,6 +14,6 @@ public class alert_dialog_answer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         gi = getIntent();
         adb = new AlertDialog.Builder(this);
-        adb.setTitle("Alert number: ")
+        adb.setTitle("Alert number: ");
     }
 }

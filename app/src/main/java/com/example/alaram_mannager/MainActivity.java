@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.alaram_mannager.recivers.ExactAlarm;
 
+import java.io.File;
 import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,17 +33,44 @@ public class MainActivity extends AppCompatActivity {
     private AlertDialog ad;
     private Calendar currentTime;
     private int ALARM_REQUEST_CODE;
+    private String FILENAME = "Alarm_state";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ALARM_REQUEST_CODE=0;
 
         textView = findViewById(R.id.textView);
         Reminder_button = findViewById(R.id.Reminder_button);
         Exit_button = findViewById(R.id.Exit_button);
-        setInitialSnooze();
+
+        if(Check_SharedPrefrences())
+        {
+            SharedPreferences settings=getSharedPreferences("Alarm_state",MODE_PRIVATE);
+            ALARM_REQUEST_CODE=settings.getInt("AlarmNum",0);
+            if(ALARM_REQUEST_CODE==0)
+            {
+                setInitialSnooze();
+            }
+            else
+            {
+
+            }
+        }
+        else
+        {
+            ALARM_REQUEST_CODE=0;
+            SharedPreferences settings=getSharedPreferences("Alarm_state",MODE_PRIVATE);
+            SharedPreferences.Editor editor=settings.edit();
+            editor.putInt("AlarmNum",ALARM_REQUEST_CODE);
+            setInitialSnooze();
+        }
+    }
+
+    public boolean Check_SharedPrefrences()
+    {
+        File f = new File("/data/data/" + getPackageName() +  "/shared_prefs/" + FILENAME);
+        return f.exists();
     }
 
     public void setInitialSnooze()
