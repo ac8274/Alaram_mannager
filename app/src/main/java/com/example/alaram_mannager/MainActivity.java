@@ -44,27 +44,7 @@ public class MainActivity extends AppCompatActivity {
         Reminder_button = findViewById(R.id.Reminder_button);
         Exit_button = findViewById(R.id.Exit_button);
 
-        if(Check_SharedPrefrences())
-        {
-            SharedPreferences settings=getSharedPreferences("Alarm_state",MODE_PRIVATE);
-            ALARM_REQUEST_CODE=settings.getInt("AlarmNum",0);
-            if(ALARM_REQUEST_CODE==0)
-            {
-                setInitialSnooze();
-            }
-            else
-            {
-
-            }
-        }
-        else
-        {
-            ALARM_REQUEST_CODE=0;
-            SharedPreferences settings=getSharedPreferences("Alarm_state",MODE_PRIVATE);
-            SharedPreferences.Editor editor=settings.edit();
-            editor.putInt("AlarmNum",ALARM_REQUEST_CODE);
-            setInitialSnooze();
-        }
+        setInitialSnooze();
     }
 
     public boolean Check_SharedPrefrences()
@@ -128,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         alarmMgr.cancel(alarmIntent);
 
         ALARM_REQUEST_CODE++;
+        intent.putExtra("original_time",calSet.getTimeInMillis());
         intent.putExtra("alarm number", ALARM_REQUEST_CODE);
         intent.putExtra("Alarm_Option",1);
         alarmIntent = PendingIntent.getBroadcast(this,
